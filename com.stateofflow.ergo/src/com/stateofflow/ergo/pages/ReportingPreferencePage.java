@@ -1,5 +1,6 @@
 package com.stateofflow.ergo.pages;
 
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -41,13 +42,21 @@ public class ReportingPreferencePage extends PreferencePage implements IWorkbenc
 				Activator.getDefault().savePluginPreferences();
 			}
 		});
-		text.setText(Activator.getDefault().getPluginPreferences().getString(Activator.REPORTING_PREFERENCES));
+		Preferences prefs = Activator.getDefault().getPluginPreferences();
+		text.setText(prefs.getString(Activator.REPORTING_PREFERENCES));
 
 		data = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL);
 		data.horizontalSpan = 2;
 		Label label = new Label(content, SWT.NONE);
 		label.setText("When set to empty, no reporting is done. ");
 		label.setLayoutData(data);
+
+		data = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL);
+		(new Label(content, SWT.NONE)).setText("My unique ID: ");
+		Text uid = new Text(content, SWT.BORDER);
+		uid.setText(Activator.getUUIDStr());
+		uid.setEditable(false);
+		uid.setLayoutData(data);
 
 		return content;
 	}
