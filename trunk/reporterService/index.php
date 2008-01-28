@@ -2,7 +2,6 @@
 	include_once("include/connect.php");
 	
 	if (isset($_POST['uuid']) && isset($_POST['contents'])) {
-		
 		// select if already present
 		$uuid = addslashes($_POST['uuid']);
 		$query = "select id from ergo_users where uuid = '$uuid'";
@@ -54,7 +53,10 @@
 	$query = "select count(id) as count from ergo_users";
 	$arr = mysql_fetch_array(mysql_query($query));
 	echo "We have {$arr['count']} user(s)!<br>";
-	$query = "select lastUpdate from ergo_users order by lastUpdate desc limit 1";
+	$query = "select UNIX_TIMESTAMP(lastUpdate) as lastUpdate from "
+				."ergo_users order by lastUpdate desc limit 1";
 	$arr = mysql_fetch_array(mysql_query($query));
-	echo "Last update {$arr['lastUpdate']}!<br>";
+	$delta = time()-$arr['lastUpdate'];
+	$minutes = $delta == 0 ? 0: round($delta/60);
+	echo "Last update $minutes minute(s) ago!<br>";
 ?>
