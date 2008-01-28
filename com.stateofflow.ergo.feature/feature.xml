@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.stateofflow.ergo.feature"
+      label="Ergo Feature"
+      version="0.0.4"
+      provider-name="Channing Walton">
+
+   <description url="http://www.example.com/description">
+      Ergo show you what you do in the Eclipse workbench and how you do it. It shows keybindings for the actions you use to help you learn how to use Eclipse.
+   </description>
+
+   <license>
+      CPL
+   </license>
+
+   <plugin
+         id="com.stateofflow.ergo"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
