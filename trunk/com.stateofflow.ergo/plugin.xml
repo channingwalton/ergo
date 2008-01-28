@@ -28,5 +28,14 @@
             file="contexts.xml">
       </contexts>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+         
+         <page id="com.stateofflow.ergo.REPORTING_PREFERENCES"
+ 			name="Ergo Reporting"
+    		class="com.stateofflow.ergo.pages.ReportingPreferencePage">
+   		</page>
+         
+   </extension>
 
 </plugin>

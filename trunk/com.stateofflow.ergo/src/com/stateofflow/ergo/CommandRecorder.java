@@ -124,4 +124,8 @@ public class CommandRecorder {
 	public void clear() {
 		commands.clear();
 	}
+
+	public HashMap<Command, CommandCount> getCommands() {
+		return commands;
+	}
 }
