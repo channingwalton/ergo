@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="com.stateofflow.ergo"
+            name="Ergo">
+      </category>
+      <view
+            category="com.stateofflow.ergo"
+            class="com.stateofflow.ergo.ergoview.ErgoView"
+            icon="icons/sample.gif"
+            id="com.stateofflow.ergo.ergoview.ErgoView"
+            name="Ergo">
+      </view>
+      <view
+            category="com.stateofflow.ergo"
+            class="com.stateofflow.ergo.sequenceview.SequenceView"
+            icon="icons/sample.gif"
+            id="com.stateofflow.ergo.sequenceview.SequenceView"
+            name="Ergo Sequences">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+
+</plugin>
