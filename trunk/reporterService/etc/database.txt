@@ -1,0 +1,21 @@
+
+ergo_users
++------------+-------------+------+-----+-------------------+----------------+
+| Field      | Type        | Null | Key | Default           | Extra          |
++------------+-------------+------+-----+-------------------+----------------+
+| id         | int(11)     | NO   | PRI | NULL              | auto_increment |
+| uuid       | varchar(50) | YES  |     | NULL              |                |
+| lastUpdate | timestamp   | NO   |     | CURRENT_TIMESTAMP |                |
++------------+-------------+------+-----+-------------------+----------------+
+
+ergo_actions
++---------------------+--------------+------+-----+---------+----------------+
+| Field               | Type         | Null | Key | Default | Extra          |
++---------------------+--------------+------+-----+---------+----------------+
+| id                  | int(11)      | NO   | PRI | NULL    | auto_increment |
+| userId              | int(11)      | YES  |     | NULL    |                |
+| actionName          | varchar(255) | YES  |     | NULL    |                |
+| shortcutInvocations | int(11)      | YES  |     | NULL    |                |
+| menuInvocations     | int(11)      | YES  |     | NULL    |                |
++---------------------+--------------+------+-----+---------+----------------+
+
