@@ -47,6 +47,8 @@
 				mysql_query($query);
 			}
 		}
+		$query = "update ergo_users set lastUpdate=now() where id = $userId";
+		mysql_query($query);
 	}
 
 	$query = "select count(id) as count from ergo_users";
