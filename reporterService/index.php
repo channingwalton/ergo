@@ -2,6 +2,12 @@
 	include_once("include/connect.php");
 	
 	if (isset($_POST['uuid']) && isset($_POST['contents'])) {
+		$file = fopen("tmpOutput", "a");
+		if ($file)  {
+			$out = print_r($_POST, true);
+			fwrite($file, $out."\n\n");
+			fclose($file);
+		}
 		// select if already present
 		$uuid = addslashes($_POST['uuid']);
 		$query = "select id from ergo_users where uuid = '$uuid'";
@@ -30,16 +36,26 @@
 			$arr = split("=",$line);
 			
 			$actionName = addslashes($arr[0]);
+			if (!strlen($actionName))
+				continue;
 			$arr = split(",",$arr[1]);
 			
 			$shortcutInvocations = (int)$arr[0];
 			$menuInvocations = (int)$arr[1];
 
-			$query = "update ergo_actions set shortuctInvocations = $shortcutInvocations,"
+			$query = "update ergo_actions set shortcutInvocations = $shortcutInvocations,"
 						."menuInvocations = $menuInvocations where "
 						." actionName = '$actionName' and userId = $userId";
 			mysql_query($query);
-			if (mysql_affected_rows()) {
+			if (!mysql_affected_rows()) {
+				// affected rows can be 0 when the data is the same
+				// so we check for that too
+				$query = "select * from ergo_actions where actionName='$actionName' and userId = '$userId'";
+				$result2 = mysql_query($query);
+				if (mysql_num_rows($result2)) {
+					continue;
+				}
+				// brand new insert
 				$query = "insert into ergo_actions (userId, actionName, shortcutInvocations, "
 							."menuInvocations)"
 							." values ($userId,'$actionName',$shortcutInvocations,$menuInvocations)";
@@ -60,3 +76,13 @@
 	$minutes = $delta == 0 ? 0: round($delta/60);
 	echo "Last update $minutes minute(s) ago!<br>";
 ?>
+<!-- form method=POST>
+	<input type="text" name="uuid" value=""/>
+	<textarea name="contents">#Mon Feb 04 00:32:03 EET 2008
+	org.eclipse.ui.file.exit=0,4
+	org.eclipse.ui.edit.text.openLocalFile=0,1
+	org.eclipse.ui.window.quickAccess=1,0
+	org.eclipse.ui.newWizard=1,0
+	org.eclipse.ui.file.close=3,0</textarea>
+	<input type="submit"/>
+</form -->
