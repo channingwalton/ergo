@@ -43,6 +43,23 @@
 			$shortcutInvocations = (int)$arr[0];
 			$menuInvocations = (int)$arr[1];
 
+			$name = addslashes($arr[2]);
+			$desc = addslashes($arr[3]);
+			$shortcut = addslashes($arr[4]);
+			// see if the shortcut is in the database
+			$query = "select * from ergo_commands where command_id = '$actionName'";
+			$result = mysql_query($query);
+			$arr = mysql_fetch_assoc($result);
+			if ($arr['command_id'] && !strlen($arr['shortcut'])) {
+				$query = "update ergo_commands set shortcut = '$shortcut' where id = ".$arr['id'];
+				mysql_query($query);
+			}
+			else if (!$arr['id']) {
+				$query = "insert into ergo_commands (command_id, name, description, shortcut) values "
+								."('$actionName','$name','$desc','$shortcut')";
+				mysql_query($query);
+			}
+
 			$query = "update ergo_actions set shortcutInvocations = $shortcutInvocations,"
 						."menuInvocations = $menuInvocations where "
 						." actionName = '$actionName' and userId = $userId";
