@@ -17,7 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.keys.IBindingService;
 
 /**
  * Task that makes request to a reporting service. If no reporting service is
@@ -33,19 +36,42 @@ public class ReporterTimerTask extends TimerTask {
 	@Override
 	public void run() {
 		try {
+			IBindingService bindingService = (IBindingService) PlatformUI.getWorkbench().getService(
+					IBindingService.class);
+
 			Map<Command, CommandCount> commands = Activator.getCommandRecorder().getCommands();
 
 			Properties properties = new Properties();
 			for (Command command : commands.keySet()) {
-				properties.put(command.getId(), commands.get(command).getKeypressCount() + "," + commands.get(command).getMenuCount());
+				String name = null;
+				try {
+					name = command.getName();
+				}
+				catch (NotDefinedException e) {
+				}
+				String keyStroke = bindingService.getBestActiveBindingFormattedFor(command.getId());
+				keyStroke = keyStroke == null ? Messages.CommandCount_NONE : keyStroke;
+				properties.put(
+						command.getId(),
+						commands.get(command).getKeypressCount()
+								+ ","
+								+ commands.get(command).getMenuCount()
+								+ ","
+								+ name.replaceAll(",", "####")
+								+ ","
+								+ commands.get(command).getDescription().replaceAll(
+										",", "####") + ","
+								+ keyStroke.replaceAll(",", "####"));
 			}
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			properties.store(out, "");
 
 			makeRequest(out.toString());
-		} catch (FileNotFoundException e) {
+		}
+		catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -61,27 +87,35 @@ public class ReporterTimerTask extends TimerTask {
 			urlConn.setDoOutput(true);
 			urlConn.setUseCaches(false);
 			// Specify the content type.
-			urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			urlConn.setRequestProperty("Content-Type",
+					"application/x-www-form-urlencoded");
 
 			// Send POST output.
 			printout = new DataOutputStream(urlConn.getOutputStream());
-			String content = "uuid=" + URLEncoder.encode(Activator.getUUIDStr(), "UTF-8") + "&contents=" + URLEncoder.encode(buff, "UTF-8");
+			String content = "uuid="
+					+ URLEncoder.encode(Activator.getUUIDStr(), "UTF-8")
+					+ "&contents=" + URLEncoder.encode(buff, "UTF-8");
 			printout.writeBytes(content);
 			printout.flush();
 			printout.close();
 
 			// Get response data.
-			DataInputStream input = new DataInputStream(urlConn.getInputStream());
+			DataInputStream input = new DataInputStream(
+					urlConn.getInputStream());
 			while (null != input.readLine())
 				;
 
-		} catch (MalformedURLException e) {
+		}
+		catch (MalformedURLException e) {
 			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
+		}
+		catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
-		} finally {
+		}
+		finally {
 
 		}
 	}
@@ -105,7 +139,8 @@ public class ReporterTimerTask extends TimerTask {
 				host = host.replaceAll(matcher.group(), "");
 				try {
 					port = Integer.parseInt(matcher.group());
-				} catch (NumberFormatException e) {
+				}
+				catch (NumberFormatException e) {
 					port = 80;
 				}
 			}
@@ -116,7 +151,8 @@ public class ReporterTimerTask extends TimerTask {
 		try {
 			URL url = new URL("http", host, port, path);
 			return url;
-		} catch (MalformedURLException e) {
+		}
+		catch (MalformedURLException e) {
 			e.printStackTrace();
 			return null;
 		}
