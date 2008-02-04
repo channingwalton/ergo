@@ -43,7 +43,14 @@ public abstract class BasicView extends ViewPart {
 		PlatformUI.getWorkbench().addWindowListener(new IWindowListener() {
 
 			public void windowActivated(IWorkbenchWindow window) {
-				viewer.refresh();
+				// causes an error message on Eclipse 3.3
+				// added a try-catch to supress it
+				// probably the line is not needed
+				// Channing?
+				try {
+					viewer.refresh();
+				} catch (org.eclipse.swt.SWTException e) {
+				}
 			}
 
 			public void windowClosed(IWorkbenchWindow window) {
