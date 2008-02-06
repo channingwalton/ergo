@@ -31,7 +31,5 @@ public class ErgoView extends BasicView {
 		}
 
 		viewer.setInput(getViewSite());
-		Column.MENU_COUNT.setSorter(viewer);
-		Column.MENU_COUNT.setSorter(viewer);
 	}
 }

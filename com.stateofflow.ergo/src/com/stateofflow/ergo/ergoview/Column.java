@@ -92,7 +92,6 @@ public enum Column {
 
 	private final String name;
 	private final int width;
-	private TableColumn tableColumn;
 
 	Column(String name, int width) {
 		this.name = name;
@@ -104,18 +103,18 @@ public enum Column {
 	abstract String getLabel(CommandCount commandCount);
 
 	void create(final TableViewer tableViewer) {
-		tableColumn = new TableColumn(tableViewer.getTable(), SWT.LEFT);
+		final TableColumn tableColumn = new TableColumn(tableViewer.getTable(), SWT.LEFT);
 		tableColumn.setText(name);
 		tableColumn.setWidth(width);
 		tableColumn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setSorter(tableViewer);
+				setSorter(tableViewer, tableColumn);
 			}
 		});
 	}
 
-	public void setSorter(final TableViewer tableViewer) {
+	public void setSorter(final TableViewer tableViewer, final TableColumn tableColumn) {
 		ErgoViewSorter<CommandCount> sorter = getSorter();
 		if (sorter == tableViewer.getSorter()) {
 			sorter.reverse();
