@@ -14,9 +14,28 @@ import org.eclipse.ui.part.ViewPart;
 
 public abstract class BasicView extends ViewPart {
 
+	private final class WindowListener implements IWindowListener {
+		public void windowActivated(IWorkbenchWindow window) {
+			if (!viewer.getTable().isDisposed()) {
+				viewer.refresh();
+			}
+		}
+
+		public void windowClosed(IWorkbenchWindow window) {
+		}
+
+		public void windowDeactivated(IWorkbenchWindow window) {
+		}
+
+		public void windowOpened(IWorkbenchWindow window) {
+		}
+	}
+
 	private Action clearAction;
 
 	private TableViewer viewer;
+
+	private WindowListener windowListener;
 
 	@Override
 	public final void createPartControl(Composite parent) {
@@ -40,29 +59,14 @@ public abstract class BasicView extends ViewPart {
 		clearAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
 		getViewSite().getActionBars().getToolBarManager().add(clearAction);
 
-		PlatformUI.getWorkbench().addWindowListener(new IWindowListener() {
+		windowListener = new WindowListener();
+		PlatformUI.getWorkbench().addWindowListener(windowListener);
+	}
 
-			public void windowActivated(IWorkbenchWindow window) {
-				// causes an error message on Eclipse 3.3
-				// added a try-catch to supress it
-				// probably the line is not needed
-				// Channing?
-				try {
-					viewer.refresh();
-				} catch (org.eclipse.swt.SWTException e) {
-				}
-			}
-
-			public void windowClosed(IWorkbenchWindow window) {
-			}
-
-			public void windowDeactivated(IWorkbenchWindow window) {
-			}
-
-			public void windowOpened(IWorkbenchWindow window) {
-			}
-
-		});
+	@Override
+	public void dispose() {
+		PlatformUI.getWorkbench().removeWindowListener(windowListener);
+		super.dispose();
 	}
 
 	protected abstract void clearAll();
