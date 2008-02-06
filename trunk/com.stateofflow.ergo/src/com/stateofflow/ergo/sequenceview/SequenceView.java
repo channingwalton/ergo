@@ -29,10 +29,6 @@ public class SequenceView extends BasicView {
 		for (Column column : Column.values()) {
 			column.create(viewer);
 		}
-
 		viewer.setInput(getViewSite());
-		Column.SEQUENCE.setSorter(viewer);
-		Column.COUNT.setSorter(viewer);
-		Column.COUNT.getSorter().reverse();
 	}
 }
